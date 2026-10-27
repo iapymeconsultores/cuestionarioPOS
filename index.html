@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ADN de tu marca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;700&family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&family=Manrope:wght@400;600;800&family=DM+Serif+Display&family=Work+Sans:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,400;800&family=Josefin+Sans:wght@300;400;600&family=Anton&family=Archivo:wght@400;600&family=Syne:wght@600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0,0&display=block">
+<style>
+/* Layout: cuestionario a la izquierda, vista previa viva de la tienda a la derecha (debajo en móvil). Barra de navegación fija abajo. */
+:root{
+  --bg:#F3F3F1; --surface:#FFFFFF; --line:#DCDCD8; --fg:#1A1B1E; --muted:#5E6066;
+  --accent:#2E45D1; --accent-soft:#E6E9FB; --sel:#1A1B1E; --sel-fg:#FFFFFF;
+  --ui:"Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display:"Unbounded", "Onest", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131416; --surface:#1C1D20; --line:#303237; --fg:#ECECEA; --muted:#A3A5AB;
+  --accent:#8E9BFF; --accent-soft:#252A4A; --sel:#ECECEA; --sel-fg:#131416; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131416; --surface:#1C1D20; --line:#303237; --fg:#ECECEA; --muted:#A3A5AB;
+  --accent:#8E9BFF; --accent-soft:#252A4A; --sel:#ECECEA; --sel-fg:#131416; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ms-icon,.mi{font-family:"Material Symbols Outlined";font-weight:normal;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;-webkit-font-feature-settings:"liga";font-feature-settings:"liga";-webkit-font-smoothing:antialiased}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:16px;height:60px}
+.brand{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.01em}
+.prog{flex:1;display:flex;align-items:center;gap:12px;min-width:0}
+.prog-bar{flex:1;height:4px;background:var(--line);border-radius:4px;overflow:hidden;max-width:360px}
+.prog-bar i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .4s cubic-bezier(.16,1,.3,1)}
+.prog-txt{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;padding:2px}
+.lang button{border:0;background:none;padding:4px 10px;border-radius:999px;font-size:13px;font-weight:500;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--sel);color:var(--sel-fg)}
+
+.wrap{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:40px;
+  padding-block:32px 120px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap.full{grid-template-columns:minmax(0,1fr)}
+.q{min-width:0}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(24px,3.4vw,36px);line-height:1.15;letter-spacing:-.01em;margin:0 0 10px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:500;font-size:17px;line-height:1.3;margin:0 0 4px;text-wrap:balance}
+.lead{color:var(--muted);font-size:16px;max-width:60ch;margin:0 0 28px}
+.hint{color:var(--muted);font-size:14px;margin:0 0 14px;max-width:60ch}
+.block{margin-bottom:40px}
+.opt-tag{display:inline-block;font-size:12px;font-weight:500;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle;font-family:var(--ui)}
+
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;max-width:480px}
+.field label{font-weight:500;font-size:14px}
+.inp{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:15px}
+.inp::placeholder{color:var(--muted);opacity:.8}
+textarea.inp{min-height:96px;resize:vertical;max-width:640px}
+
+/* tiles */
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.tile{position:relative;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px;text-align:left;
+  display:flex;flex-direction:column;gap:10px;transition:border-color .2s, transform .15s;min-width:0}
+.tile:hover{border-color:var(--muted)}
+.tile:active{transform:scale(.985)}
+.tile[aria-pressed="true"]{border-color:var(--sel);box-shadow:0 0 0 1.5px var(--sel)}
+.tile[aria-pressed="true"]::after{content:"check";font-family:"Material Symbols Outlined";position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;
+  background:var(--sel);color:var(--sel-fg);font-size:16px;display:grid;place-items:center;z-index:2}
+.tile .t-name{font-weight:600;font-size:14px;line-height:1.3}
+.tile .t-desc{font-size:13px;color:var(--muted);line-height:1.4}
+.tile.icon{align-items:flex-start;padding:16px}
+.tile.icon .mi{font-size:26px}
+.tile.help{border-style:dashed;justify-content:center;align-items:center;text-align:center;color:var(--muted)}
+.tile.help[aria-pressed="true"]{color:var(--fg)}
+.badge{align-self:flex-start;font-size:11.5px;font-weight:500;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 8px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--sel);color:var(--sel-fg);border-color:var(--sel)}
+.chip .mi{font-size:16px}
+.chip.small{padding:5px 10px;font-size:13px}
+
+.price{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* sliders */
+.sl{display:grid;grid-template-columns:120px minmax(0,1fr) 120px;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.sl:last-of-type{border-bottom:0}
+.sl span{font-size:14px;font-weight:500}
+.sl span:last-child{text-align:right}
+.sl span.on{color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--sel);height:28px}
+
+/* moods */
+.mood-art{display:grid;grid-template-columns:1.5fr 1fr;grid-template-rows:1fr 1fr;gap:4px;aspect-ratio:4/3;border-radius:10px;overflow:hidden}
+.mood-art > div{position:relative;overflow:hidden}
+.mood-art .big{grid-row:span 2;display:grid;place-items:center}
+.mood-art .shape{width:56%;aspect-ratio:1}
+.shape.arch{border-radius:999px 999px 0 0;aspect-ratio:3/4}
+.shape.circle{border-radius:50%}
+.shape.rect{aspect-ratio:3/4;width:46%}
+.shape.blob{border-radius:62% 38% 55% 45% / 48% 60% 40% 52%}
+.shape.diamond{transform:rotate(45deg);width:42%}
+.shape.square{width:26%}
+.shape.ring{border-radius:50%;background:transparent!important;border:3px solid currentColor}
+.mood-art .word{display:grid;place-items:center;font-size:28px}
+
+/* palettes */
+.pal{display:flex;height:64px;border-radius:10px;overflow:hidden}
+.pal i{flex:1}
+.pal i:first-child{flex:1.6}
+.pal-mini{display:flex;flex-direction:column;gap:6px}
+.hexes{display:flex;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.own{display:flex;gap:18px;flex-wrap:wrap;margin-top:6px}
+.own label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500}
+.own input[type=color]{width:84px;height:56px;border:1px solid var(--line);border-radius:10px;padding:3px;background:var(--surface)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+
+/* fonts */
+.font-card{padding:18px}
+.fc-name{font-size:30px;line-height:1.1;overflow-wrap:anywhere}
+.fc-body{font-size:14px;color:var(--muted)}
+
+/* refs */
+.refrows{display:flex;flex-direction:column;gap:14px;margin-bottom:14px;max-width:720px}
+.refrow{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.refrow.ok{border-color:var(--sel)}
+.refrow-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.refnum{font-family:var(--display);font-weight:500;font-size:14px}
+.refrow label{font-size:13px;font-weight:500;margin-top:6px}
+.refrow textarea.inp{min-height:72px}
+.refcount{font-size:14px;font-weight:500;margin:4px 0 0}
+.refcount.ok{color:var(--fg)}
+.refcount.no{color:var(--accent)}
+.ref .ms{font-size:4.2px}
+.ref-foot{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ref-link{font-size:13px;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
+.ref-link:hover{text-decoration:underline}
+.likes{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.ref-wrap{display:flex;flex-direction:column;gap:8px;min-width:0}
+
+/* mini web mockup */
+.ms{--b:#fff;--s:#eee;--f:#111;--a:#111;--a2:#999;--fd:sans-serif;--fb:sans-serif;--r:0em;--tt:none;--ls:0;--fw:700;
+  background:var(--b);color:var(--f);font-family:var(--fb);font-size:5.4px;line-height:1.3;border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,.08);
+  pointer-events:none;user-select:none}
+.ms-nav{display:flex;align-items:center;justify-content:space-between;gap:1em;padding:1.4em 2em}
+.ms-logo{font-family:var(--fd);font-size:2em;font-weight:var(--fw);text-transform:var(--tt);letter-spacing:var(--ls);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45%}
+.ms-links{display:flex;gap:1.2em}
+.ms-links i{display:block;width:3.4em;height:.55em;background:currentColor;opacity:.35;border-radius:1em}
+.ms-nav .mi{font-size:2.4em}
+.ms-h{font-family:var(--fd);font-weight:var(--fw);text-transform:var(--tt);letter-spacing:var(--ls);font-size:3.4em;line-height:1.02;margin:0}
+.ms-btn{display:inline-block;background:var(--a);color:var(--b);padding:.7em 1.8em;font-size:1.2em;border-radius:var(--r);font-weight:600;margin-top:1em}
+.ms-ph{border-radius:var(--r);background:var(--s)}
+.ms-hero{position:relative}
+.ms-hero.full{height:26em;margin:0 2em;display:flex;align-items:flex-end;padding:2.4em}
+.ms-hero.full .ms-h,.ms-hero.video .ms-h{color:#fff;text-shadow:0 .1em .6em rgba(0,0,0,.25)}
+.ms-hero.split{display:grid;grid-template-columns:1fr 1.1fr;gap:2em;padding:0 2em;align-items:center}
+.ms-hero.split .ms-ph{height:24em}
+.ms-lines{display:flex;flex-direction:column;gap:.6em;margin-top:1.2em}
+.ms-lines i{display:block;height:.55em;background:currentColor;opacity:.25;border-radius:1em}
+.ms-hero.video{height:26em;margin:0 2em;display:grid;place-items:center}
+.ms-play{width:6em;height:6em;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;color:#111}
+.ms-play .mi{font-size:3.6em}
+.ms-hero.video .ms-h{position:absolute;left:1.2em;bottom:.8em;font-size:2.6em}
+.ms-hero.carrusel{padding:0 2em}
+.ms-hero.carrusel .row{display:flex;gap:1em;margin-top:1.2em;overflow:hidden}
+.ms-hero.carrusel .row .ms-ph{flex:0 0 22%;height:14em}
+.ms-hero.letras{padding:2em 2em 1em}
+.ms-hero.letras .ms-h{font-size:7.4em;line-height:.95;overflow-wrap:anywhere}
+.ms-hero.letras .strip{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1em;margin-top:1.6em}
+.ms-hero.letras .strip .ms-ph{height:8em}
+.ms-entry{display:grid;grid-template-columns:1fr 1fr;gap:1em;margin:0 2em 1.6em}
+.ms-entry > div{height:12em;display:flex;align-items:flex-end;padding:1.2em}
+.ms-entry b{font-family:var(--fd);font-size:2em;color:#fff;text-transform:var(--tt);letter-spacing:var(--ls);text-shadow:0 .1em .5em rgba(0,0,0,.3)}
+.ms-sec{font-family:var(--fd);font-size:1.8em;font-weight:var(--fw);text-transform:var(--tt);letter-spacing:var(--ls);padding:2em 1.1em .8em}
+.ms-grid{display:grid;gap:1.2em;padding:0 2em 2.4em}
+.ms-card .ms-ph{aspect-ratio:3/4}
+.ms-card .ms-lines{margin-top:.8em;gap:.5em}
+.ms-card .ms-lines i:last-child{width:40%;opacity:.5}
+.ms-foot{background:var(--f);height:4em;opacity:.9}
+
+/* pdp art */
+.pdp{background:var(--b);color:var(--f);border-radius:8px;border:1px solid rgba(0,0,0,.08);padding:10px;aspect-ratio:4/3;display:grid;gap:6px;font-size:5px}
+.pdp .ms-ph{border-radius:var(--r)}
+.pdp.galeria{grid-template-columns:1.4fr 1fr}
+.pdp.galeria .ph-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.pdp.vertical{grid-template-columns:1.6fr 1fr}
+.pdp.vertical .ph-col{display:grid;gap:4px;overflow:hidden;grid-template-rows:1fr 1fr .6fr}
+.pdp.miniaturas{grid-template-columns:.25fr 1.4fr 1fr}
+.pdp.miniaturas .thumbs{display:grid;gap:4px;grid-template-rows:repeat(4,1fr)}
+.pdp .info{display:flex;flex-direction:column;gap:5px;padding-top:4px}
+.pdp .info i{display:block;height:4px;background:currentColor;opacity:.25;border-radius:4px}
+.pdp .info b{display:block;height:7px;width:80%;background:currentColor;opacity:.75;border-radius:4px}
+.pdp .info .btn{height:10px;background:var(--a);border-radius:var(--r);margin-top:6px;opacity:1}
+.pdp .sizes{display:flex;gap:3px}
+.pdp .sizes span{flex:1;height:7px;border:1px solid currentColor;opacity:.35;border-radius:2px}
+
+/* preview */
+.pv{position:sticky;top:84px;align-self:start;display:flex;flex-direction:column;gap:10px}
+.pv-h{font-family:var(--display);font-weight:500;font-size:14px;margin:0}
+.pv-note{font-size:12.5px;color:var(--muted);margin:0}
+.pv .ms{font-size:7.2px;box-shadow:0 18px 40px -24px rgba(20,22,30,.35)}
+.btn.pv-toggle{display:none}
+
+/* summary */
+.board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.card h3{font-size:12.5px;font-weight:600;color:var(--muted);margin:0;letter-spacing:.04em;text-transform:uppercase}
+.c2{grid-column:span 2}.c3{grid-column:span 3}.c4{grid-column:span 4}.c6{grid-column:span 6}
+.words{display:flex;flex-wrap:wrap;gap:6px}
+.words span{background:var(--bg);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:500}
+.axis{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:12.5px;color:var(--muted)}
+.axis .line{position:relative;height:1px;background:var(--line)}
+.axis .dot{position:absolute;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:var(--fg)}
+.sum-pal{display:flex;height:72px;border-radius:10px;overflow:hidden}
+.sum-pal i{flex:1}
+.quote{font-size:15px;line-height:1.55;margin:0;max-width:60ch}
+.miss{border:1.5px dashed var(--accent);background:var(--accent-soft);border-radius:14px;padding:16px 18px;margin-bottom:24px}
+.miss p{margin:0 0 8px;font-weight:600}
+.miss .chips .chip{background:var(--surface)}
+.send{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:28px}
+.status{font-size:14px;margin-top:12px;max-width:60ch}
+.status.ok{color:var(--fg)}
+.copybox{width:100%;min-height:200px;margin-top:12px;font-size:13px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.dim{color:var(--muted)}
+
+/* nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.nav-in{max-width:1240px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:11px 22px;font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--sel);color:var(--sel-fg);border-color:var(--sel)}
+.btn .mi{font-size:20px}
+.btn[disabled]{opacity:.45;cursor:default}
+.ghost{border:0;background:none;color:var(--muted);font-size:14px;padding:8px 4px;text-decoration:underline;text-underline-offset:3px}
+
+/* intro */
+.intro{max-width:720px;padding-top:4vh}
+.intro-art{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:28px 0}
+.intro-art div{aspect-ratio:3/4;border-radius:10px}
+.intro ul{padding-left:20px;margin:0 0 28px;color:var(--muted)}
+.intro li{margin-bottom:6px}
+
+@media (max-width:1020px){
+  .wrap{grid-template-columns:minmax(0,1fr)}
+  .pv{position:static;order:-1;display:none}
+  .pv.open{display:flex}
+  .btn.pv-toggle{display:inline-flex;margin-bottom:18px}
+  .g5{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .board{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .c2,.c3,.c4,.c6{grid-column:span 2}
+}
+@media (max-width:600px){
+  .g3,.g5{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g2.stack{grid-template-columns:minmax(0,1fr)}
+  .sl{grid-template-columns:1fr 1fr;row-gap:2px}
+  .sl input{grid-column:1/-1;grid-row:2}
+  .prog-bar{display:none}
+  .fc-name{font-size:24px}
+  .btn{padding:10px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <span class="brand">IApyme</span>
+  <div class="prog"><div class="prog-bar"><i id="progBar"></i></div><span class="prog-txt" id="progTxt"></span></div>
+  <div class="lang" role="group" aria-label="Idioma">
+    <button id="lang-es" data-act="lang" data-val="es">ES</button>
+    <button id="lang-uk" data-act="lang" data-val="uk">УКР</button>
+  </div>
+</div></header>
+
+<main class="wrap" id="wrap">
+  <section class="q" id="q"></section>
+  <aside class="pv" id="pv"></aside>
+</main>
+
+<nav class="nav" id="nav"><div class="nav-in" id="navIn"></div></nav>
+
+<script>
+(function(){
+"use strict";
+const KEY = "adn-marca-v1";
+
+/* ---------- datos ---------- */
+const PALETTES = [
+ {id:"bn",      es:"Blanco y negro",     uk:"Чорне і біле",        c:["#FFFFFF","#E6E6E3","#141414","#141414","#8A8A86"]},
+ {id:"arena",   es:"Arena y carbón",     uk:"Пісок і вугілля",     c:["#F2EEE8","#D9CFC1","#2A2724","#2A2724","#A08C72"]},
+ {id:"salvia",  es:"Salvia",             uk:"Шавлія",              c:["#EEF1EA","#C9D3BF","#26302A","#5E7458","#D9B98C"]},
+ {id:"terracota",es:"Terracota y piedra",uk:"Теракота і камінь",   c:["#EFEDEA","#D6CEC4","#2D2B29","#B5532F","#6C7A80"]},
+ {id:"rosa",    es:"Rosa empolvado",     uk:"Пудрово-рожевий",     c:["#FBF1F0","#F1D0D0","#3A2A2D","#C26579","#E8B4A0"]},
+ {id:"azul",    es:"Azul mediterráneo",  uk:"Середземноморський синій", c:["#F7F5F0","#CFDCE5","#14263A","#1F5B8C","#E3A44B"]},
+ {id:"noche",   es:"Noche y oro",        uk:"Ніч і золото",        c:["#151515","#2A2826","#F1ECE3","#C2A56E","#6E6458"]},
+ {id:"pop",     es:"Pop",                uk:"Поп",                 c:["#FFF8E7","#FFD23F","#1D1A39","#EE4266","#3BCEAC"]},
+ {id:"bosque",  es:"Bosque",             uk:"Ліс",                 c:["#F1F0EA","#B9C7B4","#1F2A22","#2F4A38","#C99A4B"]},
+ {id:"lavanda", es:"Lavanda",            uk:"Лаванда",             c:["#F4F2FA","#D9D2EE","#2A2540","#6B5CA5","#E7B7C8"]},
+ {id:"folk",    es:"Rojo bordado",       uk:"Червона вишивка",     c:["#FAF7F2","#E8DCCD","#1C1C1C","#B3262E","#1E3A5F"]},
+ {id:"cielo",   es:"Cielo y limón",      uk:"Небо і лимон",        c:["#F4F9FC","#CDE6F2","#1A2B33","#2A8AC0","#F2D64B"]}
+];
+const MOODS = [
+ {id:"nordico", es:"Nórdico y calmado", uk:"Скандинавський, спокійний", des:"Luz, tonos fríos suaves y mucho espacio", duk:"Світло, м'які холодні відтінки, багато простору",
+  pals:["bn","arena"], big:"#DDE3E6", sh:["arch","#F5F7F8"], pat:"repeating-linear-gradient(0deg,#C5CED2 0 1px,#EEF1F2 1px 9px)", sm:["#3D4A4F","#EEF1F2","Manrope",600]},
+ {id:"mediterraneo", es:"Mediterráneo", uk:"Середземноморський", des:"Sol, azul y terracota, verano", duk:"Сонце, синій і теракота, літо",
+  pals:["azul","terracota"], big:"#F3E6CF", sh:["circle","#C65D3B"], pat:"repeating-linear-gradient(90deg,#1F5B8C 0 8px,#F7F5F0 8px 16px)", sm:["#1F5B8C","#F3E6CF","DM Serif Display",400]},
+ {id:"urbano", es:"Urbano", uk:"Міський", des:"Hormigón, contraste y un toque de color", duk:"Бетон, контраст і краплина кольору",
+  pals:["bn","terracota"], big:"#BDBDBA", sh:["rect","#1C1C1E"], pat:"linear-gradient(#8E8E8B 1px,transparent 1px) 0 0/10px 10px, linear-gradient(90deg,#8E8E8B 1px,#D4D4D1 1px) 0 0/10px 10px", sm:["#FF4F1F","#1C1C1E","Anton",400]},
+ {id:"romantico", es:"Romántico", uk:"Романтичний", des:"Rosas suaves, delicado y femenino", duk:"Ніжні рожеві, делікатний, жіночний",
+  pals:["rosa","lavanda"], big:"#F6DDE0", sh:["circle","#E8B4A0"], pat:"radial-gradient(#C26579 1.5px,#FBF1F0 1.8px) 0 0/10px 10px", sm:["#C26579","#FBF1F0","Cormorant Garamond",600]},
+ {id:"natural", es:"Natural", uk:"Природний", des:"Verdes, tierra y materiales nobles", duk:"Зелень, земляні відтінки, натуральні матеріали",
+  pals:["salvia","bosque"], big:"#DCE3D1", sh:["blob","#6E7F5A"], pat:"repeating-radial-gradient(circle at 30% 40%,#C9D3BF 0 4px,#E6EADF 4px 8px)", sm:["#3F3A2F","#DCE3D1","Jost",500]},
+ {id:"lujo", es:"Lujo oscuro", uk:"Темна розкіш", des:"Negro, dorado y un punto misterioso", duk:"Чорний, золото, трохи загадковості",
+  pals:["noche","arena"], big:"#151515", sh:["ring","#C2A56E"], pat:"linear-gradient(135deg,#2A2826 25%,#1E1C1B 25% 50%,#2A2826 50% 75%,#1E1C1B 75%) 0 0/12px 12px", sm:["#C2A56E","#151515","Cormorant Garamond",600]},
+ {id:"pop", es:"Pop y colorido", uk:"Поп і яскраві кольори", des:"Colores vivos, alegre y joven", duk:"Яскраві кольори, радість, молодість",
+  pals:["pop","cielo"], big:"#FFD23F", sh:["circle","#EE4266"], pat:"radial-gradient(circle,#3BCEAC 35%,#540D6E 36%) 0 0/16px 16px", sm:["#540D6E","#FFD23F","Bricolage Grotesque",800]},
+ {id:"minimal", es:"Minimal", uk:"Мінімалізм", des:"Blanco y negro, solo lo esencial", duk:"Чорне й біле, тільки головне",
+  pals:["bn","arena"], big:"#FFFFFF", sh:["square","#111111"], pat:"#EDEDED", sm:["#111111","#FFFFFF","Manrope",800]},
+ {id:"bohemio", es:"Bohemio", uk:"Богемний", des:"Cálido, artesanal y con texturas", duk:"Теплий, ремісничий, з текстурами",
+  pals:["terracota","bosque"], big:"#E8C9A0", sh:["arch","#9E5A3A"], pat:"repeating-linear-gradient(45deg,#9E5A3A 0 3px,#E8C9A0 3px 9px)", sm:["#4E6B5D","#E8C9A0","DM Serif Display",400]},
+ {id:"folk", es:"Tradición actual", uk:"Сучасна традиція", des:"Raíces y bordados con aire moderno", duk:"Коріння і вишивка в сучасному прочитанні",
+  pals:["folk","azul"], big:"#FAF7F2", sh:["diamond","#B3262E"], pat:"repeating-conic-gradient(#B3262E 0 25%,#FAF7F2 0 50%) 0 0/8px 8px", sm:["#1C1C1C","#FAF7F2","Syne",800]}
+];
+const FONTS = [
+ {id:"elegante", es:"Elegante clásica", uk:"Класична елегантність", d:"'Cormorant Garamond', Georgia, serif", dw:600, tt:"none", ls:"0", b:"Jost, system-ui, sans-serif", dn:"Cormorant Garamond + Jost"},
+ {id:"moderna", es:"Moderna y limpia", uk:"Сучасний і чистий", d:"Manrope, system-ui, sans-serif", dw:800, tt:"none", ls:"-0.02em", b:"Manrope, system-ui, sans-serif", dn:"Manrope"},
+ {id:"calida", es:"Cálida con carácter", uk:"Теплий з характером", d:"'DM Serif Display', Georgia, serif", dw:400, tt:"none", ls:"0", b:"'Work Sans', system-ui, sans-serif", dn:"DM Serif Display + Work Sans"},
+ {id:"divertida", es:"Divertida", uk:"Грайливий", d:"'Bricolage Grotesque', system-ui, sans-serif", dw:800, tt:"none", ls:"-0.02em", b:"'Bricolage Grotesque', system-ui, sans-serif", dn:"Bricolage Grotesque"},
+ {id:"suave", es:"Geométrica suave", uk:"М'яка геометрія", d:"'Josefin Sans', system-ui, sans-serif", dw:300, tt:"uppercase", ls:"0.14em", b:"'Josefin Sans', system-ui, sans-serif", dn:"Josefin Sans"},
+ {id:"atrevida", es:"Atrevida", uk:"Сміливий", d:"Anton, Impact, sans-serif", dw:400, tt:"uppercase", ls:"0.01em", b:"Archivo, system-ui, sans-serif", dn:"Anton + Archivo"},
+ {id:"editorial", es:"Editorial de moda", uk:"Модний журнал", d:"Syne, system-ui, sans-serif", dw:800, tt:"uppercase", ls:"0.02em", b:"'Work Sans', system-ui, sans-serif", dn:"Syne + Work Sans"}
+];
+const REFS = [
+ {id:"toteme", name:"Toteme", url:"https://toteme.com", es:"Minimal y elegante. Mucho blanco, fotos grandes y movimiento suave.", uk:"Мінімалістичний і елегантний. Багато білого, великі фото, плавні переходи.",
+  cfg:{bg:"#F7F7F5",s:"#D8D3CC",f:"#1A1A1A",a:"#1A1A1A",a2:"#B9B2A8",font:"elegante",hero:"full",grid:4}},
+ {id:"jacquemus", name:"Jacquemus", url:"https://www.jacquemus.com", es:"Editorial y atrevida. Fotos enormes y, al entrar, eliges sección.", uk:"Як модний журнал. Величезні фото, на вході обираєш розділ.",
+  cfg:{bg:"#FFFFFF",s:"#E9D8B4",f:"#111111",a:"#111111",a2:"#9DB7C9",font:"suave",hero:"full",grid:2,entry:"elegir"}},
+ {id:"mercules", name:"Mercules", url:"https://mercules.es", es:"Catálogo ordenado y simétrico. El producto es el protagonista.", uk:"Впорядкований симетричний каталог. Головну роль грає товар.",
+  cfg:{bg:"#FFFFFF",s:"#ECEAE6",f:"#222222",a:"#222222",a2:"#D9D4CC",font:"moderna",hero:"carrusel",grid:4}},
+ {id:"sezane", name:"Sézane", url:"https://www.sezane.com", es:"Romántica y cercana, con aire parisino y textos con mucho cariño.", uk:"Романтичний і теплий, паризький настрій і турботливі тексти.",
+  cfg:{bg:"#FBF6F1",s:"#E7C9B8",f:"#2B2B2B",a:"#C2554A",a2:"#C9D6E3",font:"calida",hero:"split",grid:3}},
+ {id:"glossier", name:"Glossier", url:"https://www.glossier.com", es:"Pop y desenfadada. Rosa, gente real y tono de amiga.", uk:"Поп і невимушеність. Рожевий, справжні люди, тон подруги.",
+  cfg:{bg:"#FFF1F1",s:"#F7D4D6",f:"#1E1E1E",a:"#1E1E1E",a2:"#F2B8C0",font:"divertida",hero:"split",grid:3,r:1.2}},
+ {id:"aesop", name:"Aesop", url:"https://www.aesop.com", es:"Calmada y sensorial. Tonos tierra y textos muy cuidados.", uk:"Спокійний і чуттєвий. Земляні відтінки, продумані тексти.",
+  cfg:{bg:"#F4F1E8",s:"#C8BBA4",f:"#333333",a:"#333333",a2:"#8C7B62",font:"elegante",hero:"letras",grid:3}},
+ {id:"ganni", name:"Ganni", url:"https://www.ganni.com", es:"Colorida y atrevida, con mucha energía.", uk:"Яскравий і зухвалий, сповнений енергії.",
+  cfg:{bg:"#FFFFFF",s:"#9AD1C8",f:"#111111",a:"#FF6A3D",a2:"#F9D648",font:"atrevida",hero:"full",grid:4}},
+ {id:"arket", name:"Arket", url:"https://www.arket.com", es:"Nórdica y práctica. Orden, tonos suaves y compra fácil.", uk:"Скандинавський і практичний. Порядок, м'які тони, зручні покупки.",
+  cfg:{bg:"#F5F5F3",s:"#D7DDE0",f:"#222222",a:"#222222",a2:"#C9C2B6",font:"moderna",hero:"split",grid:4}}
+];
+const SECTORS = [
+ {id:"ropa",es:"Ropa",uk:"Одяг",i:"checkroom"},
+ {id:"calzado",es:"Calzado",uk:"Взуття",i:"steps"},
+ {id:"joyeria",es:"Joyería y accesorios",uk:"Прикраси й аксесуари",i:"diamond"},
+ {id:"cosmetica",es:"Cosmética y belleza",uk:"Косметика і краса",i:"spa"},
+ {id:"hogar",es:"Hogar y decoración",uk:"Дім і декор",i:"chair"},
+ {id:"alimentacion",es:"Alimentación",uk:"Їжа і напої",i:"restaurant"},
+ {id:"arte",es:"Arte y artesanía",uk:"Мистецтво і ремесло",i:"palette"},
+ {id:"ninos",es:"Infantil",uk:"Дитяче",i:"child_care"},
+ {id:"otro",es:"Otra cosa",uk:"Інше",i:"more_horiz"}
+];
+const AUDIENCE = [
+ {id:"mujeres",es:"Mujeres",uk:"Жінки",i:"woman"},
+ {id:"hombres",es:"Hombres",uk:"Чоловіки",i:"man"},
+ {id:"todos",es:"Todo el mundo",uk:"Усі",i:"groups"},
+ {id:"jovenes",es:"Gente joven",uk:"Молодь",i:"skateboarding"},
+ {id:"familias",es:"Familias y niños",uk:"Сім'ї з дітьми",i:"family_restroom"},
+ {id:"regalo",es:"Quien busca un regalo",uk:"Ті, хто шукає подарунок",i:"redeem"}
+];
+const PRICES = [
+ {id:"asequible",es:"Asequibles",uk:"Доступні",sym:"€"},
+ {id:"medio",es:"Medios",uk:"Середні",sym:"€€"},
+ {id:"alto",es:"Altos, de calidad",uk:"Високі, преміум",sym:"€€€"}
+];
+const SLIDERS = [
+ {id:"estilo",  a:["Clásica","Класичний"], b:["Moderna","Сучасний"]},
+ {id:"tono",    a:["Seria","Серйозний"], b:["Divertida","Веселий"]},
+ {id:"detalle", a:["Sencilla","Простий"], b:["Con muchos detalles","З безліччю деталей"]},
+ {id:"trato",   a:["Exclusiva","Ексклюзивний"], b:["Cercana","Теплий, близький"]},
+ {id:"energia", a:["Tranquila","Спокійний"], b:["Con energía","Енергійний"]}
+];
+const WORDS = [
+ ["cercana","теплий"],["elegante","елегантний"],["natural","природний"],["atrevida","сміливий"],["artesanal","ручна робота"],["alegre","радісний"],
+ ["sofisticada","вишуканий"],["tradicional","традиційний"],["sostenible","екологічний"],["juvenil","молодіжний"],["auténtica","справжній"],["romántica","романтичний"],
+ ["práctica","практичний"],["creativa","креативний"],["familiar","сімейний"],["exclusiva","ексклюзивний"]
+];
+const HEROES = [
+ {id:"full",es:"Foto grande",uk:"Велике фото"},
+ {id:"split",es:"Foto y texto",uk:"Фото і текст"},
+ {id:"video",es:"Vídeo",uk:"Відео"},
+ {id:"carrusel",es:"Productos desde el principio",uk:"Товари одразу"},
+ {id:"letras",es:"El nombre en grande",uk:"Велика назва"}
+];
+const ENTRIES = [
+ {id:"directo",es:"Se ve la tienda directamente",uk:"Одразу бачать магазин"},
+ {id:"elegir",es:"Primero eligen sección (por ejemplo, ropa o calzado)",uk:"Спершу обирають розділ (наприклад, одяг чи взуття)"}
+];
+const GRIDS = [
+ {id:"2",es:"Grandes, de 2 en 2",uk:"Великі, по 2"},
+ {id:"3",es:"De 3 en 3",uk:"По 3"},
+ {id:"4",es:"Muchos, de 4 en 4",uk:"Багато, по 4"}
+];
+const SECTIONS = [
+ {id:"novedades",es:"Novedades",uk:"Новинки",i:"new_releases"},
+ {id:"vendidos",es:"Más vendidos",uk:"Хіти продажів",i:"trending_up"},
+ {id:"categorias",es:"Categorías en cuadros",uk:"Категорії плитками",i:"grid_view"},
+ {id:"nosotros",es:"Sobre nosotros",uk:"Про нас",i:"storefront"},
+ {id:"instagram",es:"Instagram",uk:"Instagram",i:"photo_camera"},
+ {id:"opiniones",es:"Opiniones de clientes",uk:"Відгуки клієнтів",i:"reviews"},
+ {id:"newsletter",es:"Suscripción por email",uk:"Розсилка",i:"mail"},
+ {id:"video",es:"Vídeo",uk:"Відео",i:"play_circle"}
+];
+const PDPS = [
+ {id:"galeria",es:"Fotos a la izquierda, datos a la derecha",uk:"Фото ліворуч, інформація праворуч"},
+ {id:"vertical",es:"Fotos grandes, una debajo de otra",uk:"Великі фото одне під одним"},
+ {id:"miniaturas",es:"Foto grande con miniaturas",uk:"Велике фото з мініатюрами"}
+];
+const PDP_INFO = [
+ {id:"tallas",es:"Guía de tallas",uk:"Таблиця розмірів"},
+ {id:"composicion",es:"Materiales y composición",uk:"Матеріали і склад"},
+ {id:"cuidados",es:"Cuidados",uk:"Догляд"},
+ {id:"envio",es:"Plazos de envío",uk:"Терміни доставки"},
+ {id:"relacionados",es:"Productos relacionados",uk:"Схожі товари"},
+ {id:"opiniones",es:"Opiniones",uk:"Відгуки"},
+ {id:"medida",es:"Personalizable o a medida",uk:"Персоналізація або на замовлення"}
+];
+const LANGS = [
+ {id:"castellano",es:"Castellano",uk:"Іспанська"},
+ {id:"euskera",es:"Euskera",uk:"Баскська"},
+ {id:"ingles",es:"Inglés",uk:"Англійська"},
+ {id:"ucraniano",es:"Ucraniano",uk:"Українська"},
+ {id:"frances",es:"Francés",uk:"Французька"},
+ {id:"catalan",es:"Catalán",uk:"Каталонська"}
+];
+const LOGOS = [
+ {id:"si",es:"Sí, en buena calidad",uk:"Так, у гарній якості",i:"verified"},
+ {id:"algo",es:"Tengo algo, pero hay que mejorarlo",uk:"Є щось, але треба доопрацювати",i:"edit"},
+ {id:"no",es:"No tengo",uk:"Немає",i:"block"}
+];
+const PHOTOS = [
+ {id:"pro",es:"Sí, profesionales",uk:"Так, професійні",i:"photo_camera"},
+ {id:"movil",es:"Hechas con el móvil",uk:"Зроблені на телефон",i:"smartphone"},
+ {id:"no",es:"Todavía no",uk:"Ще немає",i:"hide_image"}
+];
+const CAT_SUGG = {
+ ropa:["Vestidos","Pantalones","Camisas","Chaquetas","Jerseys","Faldas","Camisetas"],
+ calzado:["Zapatillas","Botas","Botines","Sandalias","Mocasines"],
+ joyeria:["Collares","Pendientes","Anillos","Pulseras","Bolsos"],
+ cosmetica:["Cara","Cuerpo","Cabello","Maquillaje","Sets de regalo"],
+ hogar:["Textil","Decoración","Cocina","Velas","Cerámica"],
+ alimentacion:["Dulce","Salado","Bebidas","Packs de regalo"],
+ arte:["Cuadros","Láminas","Cerámica","Piezas únicas"],
+ ninos:["Bebé","Niña","Niño","Juguetes"],
+ otro:[]
+};
+const COMMON_CATS = ["Novedades","Rebajas","Regalos"];
+const LIKES = [
+ {id:"colores",es:"Colores",uk:"Кольори"},
+ {id:"fotos",es:"Fotos",uk:"Фото"},
+ {id:"orden",es:"Orden",uk:"Порядок"},
+ {id:"letras",es:"Letras",uk:"Шрифти"},
+ {id:"sensacion",es:"Sensación general",uk:"Загальне відчуття"}
+];
+
+const STEPS = [
+ {id:"inicio",   es:"Bienvenida", uk:"Вітаємо"},
+ {id:"negocio",  es:"Tu negocio", uk:"Ваш бізнес"},
+ {id:"caracter", es:"Personalidad", uk:"Характер"},
+ {id:"ambiente", es:"Ambiente", uk:"Атмосфера"},
+ {id:"colores",  es:"Colores", uk:"Кольори"},
+ {id:"letras",   es:"Letras", uk:"Шрифти"},
+ {id:"webs",     es:"Webs que te gustan", uk:"Сайти, які подобаються"},
+ {id:"portada",  es:"Página de inicio", uk:"Головна сторінка"},
+ {id:"producto", es:"Página de producto", uk:"Сторінка товару"},
+ {id:"basico",   es:"Lo básico", uk:"Основне"},
+ {id:"resumen",  es:"Tu ADN de marca", uk:"ДНК вашого бренду"}
+];
+
+/* ---------- estado ---------- */
+const DEFAULTS = {lang:"es", step:0, nombre:"", tienda:"", sector:[], sectorOtro:"", publico:[], precio:"",
+  sl:{estilo:50,tono:50,detalle:50,trato:50,energia:50}, palabras:[], diferencia:"", ambientes:[],
+  colorModo:"paleta", paleta:"", propios:["#1F5B8C","#E3A44B","#F7F5F0"], letra:"", refs:[{url:"",gusta:"",likes:[]},{url:"",gusta:"",likes:[]}], otrasWebs:"",
+  hero:"", entrada:"", rejilla:"", secciones:[], categorias:[], ficha:"", fichaInfo:[], idiomas:["castellano"],
+  logo:"", fotos:"", redes:{instagram:"",tiktok:"",facebook:"",whatsapp:""}, notas:"", visto:0};
+let S = load();
+function load(){
+  let s = null;
+  try{ s = JSON.parse(localStorage.getItem(KEY) || "null"); }catch(e){}
+  const base = JSON.parse(JSON.stringify(DEFAULTS));
+  if(s && typeof s === "object"){ for(const k in base){ if(k in s) base[k] = s[k]; } }
+  if(!Array.isArray(base.refs)) base.refs = JSON.parse(JSON.stringify(DEFAULTS.refs));
+  while(base.refs.length < 2) base.refs.push({url:"",gusta:"",likes:[]});
+  return base;
+}
+let saveT;
+function save(){ clearTimeout(saveT); saveT = setTimeout(()=>{ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }, 250); }
+
+/* ---------- utilidades ---------- */
+const $ = id => document.getElementById(id);
+const L = (es, uk) => S.lang === "uk" ? uk : es;
+const T = o => S.lang === "uk" ? o.uk : o.es;
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pressed = b => `aria-pressed="${b ? "true" : "false"}"`;
+const byId = (arr, id) => arr.find(x => x.id === id);
+const HELP = "vosotros";
+const helpLabel = () => L("Elegid vosotros","Оберіть ви");
+
+/* ---------- configuración de la vista previa ---------- */
+function currentPalette(){
+  if(S.colorModo === "propios"){ const [p,a,b] = S.propios; return [b, mix(b,a,.35), readable(b), p, a]; }
+  const p = byId(PALETTES, S.paleta);
+  if(p && S.colorModo === "paleta") return p.c;
+  const m = byId(MOODS, S.ambientes[0]);
+  if(m) return byId(PALETTES, m.pals[0]).c;
+  return ["#FFFFFF","#E4E4E1","#1A1A1A","#1A1A1A","#9A9A96"];
+}
+function hex2rgb(h){ h=h.replace("#",""); if(h.length===3) h=h.split("").map(x=>x+x).join(""); const n=parseInt(h,16); return [(n>>16)&255,(n>>8)&255,n&255]; }
+function mix(a,b,t){ const A=hex2rgb(a),B=hex2rgb(b); return "#"+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,"0")).join(""); }
+function lum(h){ const [r,g,b]=hex2rgb(h).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)}); return .2126*r+.7152*g+.0722*b; }
+function readable(bg){ return lum(bg) > .35 ? "#161616" : "#F4F2EE"; }
+function currentFont(){ return byId(FONTS, S.letra) || FONTS[1]; }
+function previewCfg(over){
+  const c = currentPalette();
+  return Object.assign({bg:c[0], s:c[1], f:c[2], a:c[3], a2:c[4], font:(byId(FONTS,S.letra)||FONTS[1]).id,
+    hero: (S.hero && S.hero!==HELP) ? S.hero : "full", grid: (S.rejilla && S.rejilla!==HELP) ? +S.rejilla : 3,
+    entry: S.entrada === "elegir" ? "elegir" : "directo", name: S.tienda.trim() || L("Tu tienda","Ваш магазин"),
+    cats: S.categorias.length >= 2 ? S.categorias.slice(0,2) : (S.sector.length>=2 ? S.sector.slice(0,2).map(id=>byId(SECTORS,id)?.es||id) : ["Mujer","Hombre"]),
+    r: S.ambientes.includes("pop") ? .8 : 0}, over || {});
+}
+
+/* ---------- maqueta de web ---------- */
+function ph(c, i){
+  const t = [ [c.s, c.a2], [c.a2, c.s], [mix(c.s,c.f,.12), c.s], [c.s, mix(c.a,c.s,.6)] ][i % 4];
+  return `background:linear-gradient(${150 + i*25}deg, ${t[0]}, ${t[1]})`;
+}
+function miniSite(c){
+  const F = byId(FONTS, c.font) || FONTS[1];
+  const vars = `--b:${c.bg};--s:${c.s};--f:${c.f};--a:${c.a};--a2:${c.a2};--fd:${F.d};--fb:${F.b};--fw:${F.dw};--tt:${F.tt};--ls:${F.ls};--r:${c.r||0}em`;
+  const title = "Nueva colección";
+  let hero = "";
+  if(c.hero === "full") hero = `<div class="ms-hero full ms-ph" style="${ph(c,0)}"><div><p class="ms-h">${title}</p><span class="ms-btn">Comprar</span></div></div>`;
+  else if(c.hero === "split") hero = `<div class="ms-hero split"><div><p class="ms-h">${title}</p><div class="ms-lines"><i></i><i style="width:70%"></i></div><span class="ms-btn">Comprar</span></div><div class="ms-ph" style="${ph(c,1)}"></div></div>`;
+  else if(c.hero === "video") hero = `<div class="ms-hero video ms-ph" style="${ph(c,2)}"><span class="ms-play"><span class="mi">play_arrow</span></span><p class="ms-h">${title}</p></div>`;
+  else if(c.hero === "carrusel") hero = `<div class="ms-hero carrusel"><p class="ms-h" style="font-size:2.4em">${title}</p><div class="row">${[0,1,2,3,0].map((k,i)=>`<div class="ms-ph" style="${ph(c,k)}"></div>`).join("")}</div></div>`;
+  else hero = `<div class="ms-hero letras"><p class="ms-h">${esc(c.name)}</p><div class="strip">${[0,1,3].map(k=>`<div class="ms-ph" style="${ph(c,k)}"></div>`).join("")}</div></div>`;
+  const entry = c.entry === "elegir" ? `<div class="ms-entry">${c.cats.map((n,i)=>`<div class="ms-ph" style="${ph(c,i+1)}"><b>${esc(n)}</b></div>`).join("")}</div>` : "";
+  const n = c.grid || 3;
+  const cards = Array.from({length:n}, (_,i)=>`<div class="ms-card"><div class="ms-ph" style="${ph(c,i)}"></div><div class="ms-lines"><i></i><i></i></div></div>`).join("");
+  return `<div class="ms" style="${vars}">
+    <div class="ms-nav"><span class="ms-logo">${esc(c.name)}</span><span class="ms-links"><i></i><i></i><i></i></span><span class="mi">shopping_bag</span></div>
+    ${entry}${hero}
+    <div class="ms-sec">Novedades</div>
+    <div class="ms-grid" style="grid-template-columns:repeat(${n},1fr)">${cards}</div>
+    <div class="ms-foot"></div></div>`;
+}
+function pdpArt(layout){
+  const c = previewCfg();
+  const vars = `--b:${c.bg};--s:${c.s};--f:${c.f};--a:${c.a};--r:${c.r||0}em`;
+  const info = `<div class="info"><b></b><i style="width:40%"></i><div class="sizes"><span></span><span></span><span></span><span></span></div><i></i><i style="width:85%"></i><i style="width:60%"></i><i class="btn"></i></div>`;
+  if(layout === "galeria") return `<div class="pdp galeria" style="${vars}"><div class="ph-grid">${[0,1,2,3].map(k=>`<div class="ms-ph" style="${ph(c,k)}"></div>`).join("")}</div>${info}</div>`;
+  if(layout === "vertical") return `<div class="pdp vertical" style="${vars}"><div class="ph-col">${[0,1,2].map(k=>`<div class="ms-ph" style="${ph(c,k)}"></div>`).join("")}</div>${info}</div>`;
+  return `<div class="pdp miniaturas" style="${vars}"><div class="thumbs">${[0,1,2,3].map(k=>`<div class="ms-ph" style="${ph(c,k)}"></div>`).join("")}</div><div class="ms-ph" style="${ph(c,0)}"></div>${info}</div>`;
+}
+function moodArt(m){
+  const [shape, shc] = m.sh;
+  const [smBg, smFg, smFont, smW] = m.sm;
+  const border = m.id === "minimal" ? "box-shadow:inset 0 0 0 1px #E2E2E2;" : "";
+  return `<div class="mood-art">
+    <div class="big" style="background:${m.big};${border}color:${shc}"><div class="shape ${shape}" style="background:${shc}"></div></div>
+    <div style="background:${m.pat}"></div>
+    <div class="word" style="background:${smBg};color:${smFg};font-family:'${smFont}';font-weight:${smW}">Aa</div>
+  </div>`;
+}
+
+/* ---------- piezas de UI ---------- */
+function tilesIcon(key, list, opts){
+  opts = opts || {};
+  const multi = !!opts.multi;
+  const val = S[key];
+  const isOn = id => multi ? val.includes(id) : val === id;
+  let h = list.map(o => `<button class="tile icon" data-act="pick" data-key="${key}" data-val="${o.id}" ${multi?`data-multi="1" data-max="${opts.max||99}"`:""} ${pressed(isOn(o.id))}>
+     ${o.i ? `<span class="mi" aria-hidden="true">${o.i}</span>` : ""}${o.sym ? `<span class="price">${o.sym}</span>` : ""}<span class="t-name">${esc(T(o))}</span></button>`).join("");
+  if(opts.help) h += `<button class="tile help" data-act="pick" data-key="${key}" data-val="${HELP}" ${multi?`data-multi="1"`:""} ${pressed(isOn(HELP))}><span class="t-name">${helpLabel()}</span></button>`;
+  return `<div class="grid ${opts.cols||"g3"}">${h}</div>`;
+}
+function chips(key, list, opts){
+  opts = opts || {};
+  const val = S[key];
+  return `<div class="chips">${list.map(o => `<button class="chip" data-act="pick" data-key="${key}" data-val="${o.id}" data-multi="1" data-max="${opts.max||99}" ${pressed(val.includes(o.id))}>${esc(T(o))}</button>`).join("")}</div>`;
+}
+function helpTile(key, multi){
+  const on = multi ? S[key].includes(HELP) : S[key] === HELP;
+  return `<button class="tile help" data-act="pick" data-key="${key}" data-val="${HELP}" ${multi?`data-multi="1"`:""} ${pressed(on)}><span class="mi" aria-hidden="true">handshake</span><span class="t-name">${helpLabel()}</span><span class="t-desc">${L("Lo vemos juntos en la reunión","Обговоримо разом на зустрічі")}</span></button>`;
+}
+
+/* ---------- pasos ---------- */
+const R = {};
+R.inicio = () => `<div class="intro">
+  <h1>${L("Vamos a descubrir cómo es tu marca","Давайте разом визначимо, яким буде ваш бренд")}</h1>
+  <p class="lead">${L("Son preguntas rápidas y casi todas con imágenes. No hace falta saber de diseño: elige lo que te guste a primera vista.","Кілька швидких запитань, майже всі з картинками. Знатися на дизайні не потрібно, просто обирайте те, що подобається з першого погляду.")}</p>
+  <div class="intro-art" aria-hidden="true">${MOODS.slice(0,5).map(m=>`<div style="background:${m.pat}"></div>`).join("")}</div>
+  <ul>
+    <li>${L("Tardarás unos 10 minutos.","Це займе близько 10 хвилин.")}</li>
+    <li>${L("Si dudas en algo, pulsa «Elegid vosotros» y lo decidimos juntos.","Якщо вагаєтеся, натисніть «Оберіть ви», і ми вирішимо разом.")}</li>
+    <li>${L("A la derecha verás una idea de cómo va quedando tu tienda según lo que elijas.","Праворуч ви побачите, як приблизно виглядатиме ваш магазин за вашим вибором.")}</li>
+    <li>${L("Tus respuestas se guardan en este navegador mientras avanzas.","Відповіді зберігаються в цьому браузері, поки ви заповнюєте.")}</li>
+    <li>${L("Al final descargarás un archivo con tus respuestas para enviárnoslo por correo.","Наприкінці ви завантажите файл із відповідями, щоб надіслати нам електронною поштою.")}</li>
+  </ul>
+  <button class="btn pri" data-act="go" data-to="1">${L("Empezar","Почати")} <span class="mi" aria-hidden="true">arrow_forward</span></button>
+</div>`;
+
+R.negocio = () => `
+  <h1>${L("Cuéntanos de tu negocio","Розкажіть про свій бізнес")}</h1>
+  <p class="lead">${L("Lo básico para entender qué tienda vamos a crear.","Основне, щоб зрозуміти, який магазин ми створюємо.")}</p>
+  <div class="block">
+    <div class="field"><label for="f-nombre">${L("¿Cómo te llamas?","Як вас звати?")}</label><input class="inp" id="f-nombre" data-bind="nombre" value="${esc(S.nombre)}" autocomplete="given-name"></div>
+    <div class="field"><label for="f-tienda">${L("¿Cómo se llama tu tienda?","Як називається ваш магазин?")}</label><input class="inp" id="f-tienda" data-bind="tienda" value="${esc(S.tienda)}" placeholder="${L("Si aún no tiene nombre, déjalo en blanco","Якщо назви ще немає, залиште порожнім")}"></div>
+  </div>
+  <div class="block"><h2>${L("¿Qué vendes?","Що ви продаєте?")}</h2><p class="hint">${L("Puedes elegir hasta 3.","Можна обрати до 3.")}</p>
+    ${tilesIcon("sector", SECTORS, {multi:true, max:3, cols:"g3"})}
+    ${S.sector.includes("otro") ? `<div class="field" style="margin-top:14px"><label for="f-sectorOtro">${L("¿Qué otra cosa?","Що саме?")}</label><input class="inp" id="f-sectorOtro" data-bind="sectorOtro" value="${esc(S.sectorOtro)}"></div>` : ""}
+  </div>
+  <div class="block"><h2>${L("¿Para quién?","Для кого?")}</h2><p class="hint">${L("Elige todas las que encajen.","Оберіть усі, що підходять.")}</p>
+    ${tilesIcon("publico", AUDIENCE, {multi:true, cols:"g3"})}</div>
+  <div class="block"><h2>${L("¿Cómo son tus precios?","Які у вас ціни?")}</h2>
+    ${tilesIcon("precio", PRICES, {cols:"g3"})}</div>`;
+
+R.caracter = () => `
+  <h1>${L("¿Cómo es tu marca?","Який характер у вашого бренду?")}</h1>
+  <p class="lead">${L("Imagina que tu tienda es una persona. Mueve cada barra hacia el lado que más se le parezca.","Уявіть, що ваш магазин це людина. Пересуньте кожен повзунок у бік, який йому ближчий.")}</p>
+  <div class="block">${SLIDERS.map(s=>{ const v=S.sl[s.id]; return `<div class="sl">
+      <span class="${v<40?"on":""}">${L(s.a[0],s.a[1])}</span>
+      <input type="range" min="0" max="100" step="5" id="sl-${s.id}" data-slider="${s.id}" value="${v}" aria-label="${esc(L(s.a[0],s.a[1]))} / ${esc(L(s.b[0],s.b[1]))}">
+      <span class="${v>60?"on":""}">${L(s.b[0],s.b[1])}</span></div>`; }).join("")}</div>
+  <div class="block"><h2>${L("Elige 3 palabras que la describan","Оберіть 3 слова, які його описують")}</h2><p class="hint">${S.palabras.length}/3</p>
+    <div class="chips">${WORDS.map(w=>`<button class="chip" data-act="pick" data-key="palabras" data-val="${w[0]}" data-multi="1" data-max="3" ${pressed(S.palabras.includes(w[0]))}>${esc(L(w[0],w[1]))}</button>`).join("")}</div></div>
+  <div class="block"><h2>${L("¿Qué te hace diferente?","Чим ви відрізняєтеся?")}<span class="opt-tag">${L("Opcional","Необов'язково")}</span></h2>
+    <p class="hint">${L("Cuéntalo como se lo dirías a una clienta. Puedes escribir en el idioma que quieras.","Розкажіть так, як розповіли б клієнтці. Можна писати будь-якою мовою.")}</p>
+    <textarea class="inp" id="f-diferencia" data-bind="diferencia" aria-label="${L("Qué te hace diferente","Чим ви відрізняєтеся")}">${esc(S.diferencia)}</textarea></div>`;
+
+R.ambiente = () => `
+  <h1>${L("¿Qué ambiente te gusta más?","Яка атмосфера вам найбільше до вподоби?")}</h1>
+  <p class="lead">${L("Elige hasta 2. Fíjate en la sensación que te da cada cuadro, no en los detalles.","Оберіть до 2. Звертайте увагу на відчуття від кожної картинки, а не на деталі.")}</p>
+  <div class="grid g3">${MOODS.map(m=>`<button class="tile" data-act="pick" data-key="ambientes" data-val="${m.id}" data-multi="1" data-max="2" ${pressed(S.ambientes.includes(m.id))}>
+     ${moodArt(m)}<span class="t-name">${esc(T(m))}</span><span class="t-desc">${esc(L(m.des,m.duk))}</span></button>`).join("")}
+     ${helpTile("ambientes", true)}</div>`;
+
+R.colores = () => {
+  const rec = new Set(); S.ambientes.forEach(id=>{ const m=byId(MOODS,id); if(m) m.pals.forEach(p=>rec.add(p)); });
+  const order = [...PALETTES].sort((a,b)=> (rec.has(b.id)?1:0) - (rec.has(a.id)?1:0));
+  const tabs = [["paleta",L("Elegir una paleta","Обрати палітру")],["propios",L("Ya tengo colores","У мене вже є кольори")],[HELP,helpLabel()]];
+  let body = "";
+  if(S.colorModo === "paleta") body = `<div class="grid g3">${order.map(p=>`<button class="tile" data-act="pick" data-key="paleta" data-val="${p.id}" ${pressed(S.paleta===p.id)}>
+      <div class="pal-mini"><div class="pal">${p.c.map(c=>`<i style="background:${c}"></i>`).join("")}</div></div>
+      ${rec.has(p.id)?`<span class="badge">${L("Encaja con tu ambiente","Пасує до вашої атмосфери")}</span>`:""}
+      <span class="t-name">${esc(T(p))}</span></button>`).join("")}</div>`;
+  else if(S.colorModo === "propios") body = `<p class="hint">${L("Toca cada cuadro para elegir el color. Si los tienes en etiquetas, bolsas o tarjetas, tráelas a la reunión.","Натисніть на кожен квадрат, щоб обрати колір. Якщо ваші кольори є на бирках, пакетах чи візитках, принесіть їх на зустріч.")}</p>
+     <div class="own">${[["Principal","Основний"],["Acento","Акцент"],["Fondo","Фон"]].map((n,i)=>`<label for="col-${i}">${L(n[0],n[1])}<input type="color" id="col-${i}" data-color="${i}" value="${S.propios[i]}"></label>`).join("")}</div>`;
+  else body = `<p class="hint">${L("Perfecto. Te propondremos colores a partir de tus respuestas.","Чудово. Ми запропонуємо кольори на основі ваших відповідей.")}</p>`;
+  return `<h1>${L("Elige tus colores","Оберіть свої кольори")}</h1>
+    <p class="lead">${L("Las paletas que encajan con el ambiente que has elegido aparecen primero.","Палітри, що пасують до обраної атмосфери, показані першими.")}</p>
+    <div class="tabs">${tabs.map(t=>`<button class="chip" data-act="colormode" data-val="${t[0]}" ${pressed(S.colorModo===t[0])}>${esc(t[1])}</button>`).join("")}</div>${body}`;
+};
+
+R.letras = () => {
+  const name = esc(S.tienda.trim() || L("Tu tienda","Ваш магазин"));
+  return `<h1>${L("¿Qué letra te gusta?","Який шрифт вам подобається?")}</h1>
+  <p class="lead">${L("Así se vería el nombre de tu tienda con cada estilo.","Так виглядатиме назва вашого магазину в кожному стилі.")}</p>
+  <div class="grid g2 stack">${FONTS.map(f=>`<button class="tile font-card" data-act="pick" data-key="letra" data-val="${f.id}" ${pressed(S.letra===f.id)}>
+     <span class="fc-name" style="font-family:${f.d};font-weight:${f.dw};text-transform:${f.tt};letter-spacing:${f.ls}">${name}</span>
+     <span class="fc-body" style="font-family:${f.b}">Nueva colección de primavera. Envío gratis desde 60 €.</span>
+     <span class="t-name">${esc(T(f))}</span></button>`).join("")}
+     ${helpTile("letra", false)}</div>`;
+};
+
+function normUrl(u){ return String(u||"").trim().replace(/^https?:\/\//i,"").replace(/^www\./i,"").replace(/\/+$/,"").toLowerCase(); }
+function validRef(r){ return /\S+\.\S{2,}/.test(String(r.url||"").trim()) && String(r.gusta||"").trim().length >= 3; }
+function refsOkCount(){ return S.refs.filter(validRef).length; }
+function refCountHtml(){ const n = refsOkCount(); return n >= 2
+  ? `<span class="mi" aria-hidden="true" style="font-size:18px;vertical-align:-4px">check_circle</span> ${L("Listo. Puedes añadir más si quieres.","Готово. Можете додати ще, якщо хочете.")}`
+  : L(`Llevas ${n} de 2. Necesitamos al menos 2 webs con lo que te gusta de cada una.`, `Заповнено ${n} з 2. Потрібно щонайменше 2 сайти з описом того, що подобається.`); }
+R.webs = () => `
+  <h1>${L("Webs que te gustan","Сайти, які вам подобаються")}</h1>
+  <p class="lead">${L("Necesitamos al menos 2 webs que te gusten y qué te gusta de cada una. No hace falta que vendan lo mismo que tú.","Нам потрібно щонайменше 2 сайти, які вам подобаються, і що саме в них подобається. Вони не обов'язково мають продавати те саме, що й ви.")}</p>
+  <div class="block">
+    <div class="refrows">${S.refs.map((r,i)=>`<div class="refrow ${validRef(r)?"ok":""}" id="refrow-${i}">
+      <div class="refrow-h"><span class="refnum">${L("Web","Сайт")} ${i+1}</span>${S.refs.length>2?`<button class="ghost" data-act="delref" data-i="${i}">${L("Quitar","Прибрати")}</button>`:""}</div>
+      <label for="ru-${i}">${L("Enlace de la web","Посилання на сайт")}</label>
+      <input class="inp" id="ru-${i}" data-refurl="${i}" value="${esc(r.url)}" placeholder="https://..." inputmode="url" autocomplete="off">
+      <label for="rg-${i}">${L("¿Qué te gusta de esta web?","Що вам подобається на цьому сайті?")}</label>
+      <textarea class="inp" id="rg-${i}" data-refg="${i}" placeholder="${L("Por ejemplo: cómo enseñan los productos, los colores, las fotos, el menú...","Наприклад: як показують товари, кольори, фото, меню...")}">${esc(r.gusta)}</textarea>
+      <div class="likes">${LIKES.map(l=>`<button class="chip small" data-act="like" data-i="${i}" data-val="${l.id}" ${pressed((r.likes||[]).includes(l.id))}>${esc(T(l))}</button>`).join("")}</div>
+    </div>`).join("")}</div>
+    <button class="btn" data-act="addref"><span class="mi" aria-hidden="true">add</span>${L("Añadir otra web","Додати ще сайт")}</button>
+    <p class="refcount ${refsOkCount()>=2?"ok":"no"}" id="refCount" aria-live="polite">${refCountHtml()}</p>
+  </div>
+  <div class="block"><h2>${L("¿No se te ocurre ninguna? Mira estas","Нічого не спадає на думку? Подивіться ці")}</h2>
+    <p class="hint">${L("Son tiendas reales. Toca una para añadirla a tu lista y luego escribe qué te gusta de ella. Con «Ver web» la abres para mirarla.","Це справжні магазини. Натисніть на картку, щоб додати її до списку, а потім напишіть, що вам подобається. «Відкрити сайт» відкриває його для перегляду.")}</p>
+    <div class="grid g2">${REFS.map(r=>{ const on = S.refs.some(x=>normUrl(x.url)===normUrl(r.url)); const cfg = Object.assign({name:r.name, cats:["Woman","Man"]}, r.cfg);
+    return `<div class="ref-wrap"><button class="tile ref" data-act="ref" data-val="${r.id}" ${pressed(on)}>
+      ${miniSite(cfg)}
+      <span class="t-name">${esc(r.name)}</span><span class="t-desc">${esc(T(r))}</span></button>
+      <div class="ref-foot"><span class="dim" style="font-size:13px">${on?L("Añadida a tu lista","Додано до списку"):L("Toca la tarjeta para añadirla","Натисніть на картку, щоб додати")}</span>
+        <a class="ref-link" href="${r.url}" target="_blank" rel="noopener">${L("Ver web","Відкрити сайт")}<span class="mi" style="font-size:16px" aria-hidden="true">north_east</span></a>
+      </div></div>`; }).join("")}</div></div>`;
+
+R.portada = () => {
+  const sug = [...new Set([].concat(...S.sector.map(s=>CAT_SUGG[s]||[]), COMMON_CATS))].filter(c=>!S.categorias.includes(c));
+  return `<h1>${L("Tu página de inicio","Ваша головна сторінка")}<span class="opt-tag">${L("Opcional","Необов'язково")}</span></h1>
+  <p class="lead">${L("Si no lo tienes claro, sáltalo. Lo vemos juntos.","Якщо не впевнені, пропустіть. Обговоримо разом.")}</p>
+  <div class="block"><h2>${L("Lo primero que se ve","Перше, що бачать відвідувачі")}</h2><p class="hint">${L("Los ejemplos ya usan tus colores y tu letra.","Приклади вже з вашими кольорами і шрифтом.")}</p>
+    <div class="grid g3">${HEROES.map(h=>`<button class="tile" data-act="pick" data-key="hero" data-val="${h.id}" ${pressed(S.hero===h.id)}>${miniSite(previewCfg({hero:h.id, grid:3, entry:"directo"}))}<span class="t-name">${esc(T(h))}</span></button>`).join("")}${helpTile("hero",false)}</div></div>
+  <div class="block"><h2>${L("Al entrar en la web","Коли заходять на сайт")}</h2>
+    <div class="grid g2">${ENTRIES.map(e=>`<button class="tile" data-act="pick" data-key="entrada" data-val="${e.id}" ${pressed(S.entrada===e.id)}>${miniSite(previewCfg({entry:e.id, grid:3}))}<span class="t-name">${esc(T(e))}</span></button>`).join("")}</div></div>
+  <div class="block"><h2>${L("Productos por fila","Товарів у ряду")}</h2>
+    <div class="grid g3">${GRIDS.map(g=>`<button class="tile" data-act="pick" data-key="rejilla" data-val="${g.id}" ${pressed(S.rejilla===g.id)}>${miniSite(previewCfg({grid:+g.id, hero:"carrusel", entry:"directo"}))}<span class="t-name">${esc(T(g))}</span></button>`).join("")}</div></div>
+  <div class="block"><h2>${L("¿Qué más quieres en la portada?","Що ще має бути на головній?")}</h2><p class="hint">${L("Elige todas las que quieras.","Оберіть усе, що хочете.")}</p>
+    ${tilesIcon("secciones", SECTIONS, {multi:true, cols:"g4"})}</div>
+  <div class="block"><h2>${L("Categorías del menú","Категорії в меню")}</h2>
+    <p class="hint">${L("Escribe las secciones de tu tienda o toca las sugerencias.","Впишіть розділи магазину або натисніть на підказки.")}</p>
+    ${S.categorias.length ? `<div class="chips" style="margin-bottom:12px">${S.categorias.map(c=>`<button class="chip" aria-pressed="true" data-act="delcat" data-val="${esc(c)}" aria-label="${L("Quitar","Прибрати")} ${esc(c)}">${esc(c)}<span class="mi" aria-hidden="true">close</span></button>`).join("")}</div>` : ""}
+    <div style="display:flex;gap:8px;max-width:480px;margin-bottom:12px"><input class="inp" id="f-cat" placeholder="${L("Escribe y pulsa Añadir","Введіть і натисніть Додати")}" aria-label="${L("Nueva categoría","Нова категорія")}"><button class="btn" data-act="addcat">${L("Añadir","Додати")}</button></div>
+    ${sug.length ? `<div class="chips">${sug.map(c=>`<button class="chip small" data-act="addcat" data-val="${esc(c)}"><span class="mi" aria-hidden="true">add</span>${esc(c)}</button>`).join("")}</div>` : ""}
+  </div>`;
+};
+
+R.producto = () => `
+  <h1>${L("¿Cómo enseñamos cada producto?","Як показувати кожен товар?")}<span class="opt-tag">${L("Opcional","Необов'язково")}</span></h1>
+  <p class="lead">${L("Es la página que se ve al tocar un producto.","Це сторінка, яку бачать після натискання на товар.")}</p>
+  <div class="block"><div class="grid g3">${PDPS.map(p=>`<button class="tile" data-act="pick" data-key="ficha" data-val="${p.id}" ${pressed(S.ficha===p.id)}>${pdpArt(p.id)}<span class="t-name">${esc(T(p))}</span></button>`).join("")}</div></div>
+  <div class="block"><h2>${L("¿Qué información quieres en cada producto?","Яку інформацію показувати для кожного товару?")}</h2>
+    ${chips("fichaInfo", PDP_INFO)}</div>`;
+
+R.basico = () => `
+  <h1>${L("Lo básico","Основне")}</h1>
+  <p class="lead">${L("Último paso antes del resumen.","Останній крок перед підсумком.")}</p>
+  <div class="block"><h2>${L("¿En qué idiomas quieres la tienda?","Якими мовами має бути магазин?")}</h2>${chips("idiomas", LANGS)}</div>
+  <div class="block"><h2>${L("¿Tienes logotipo?","У вас є логотип?")}</h2>${tilesIcon("logo", LOGOS, {cols:"g3"})}</div>
+  <div class="block"><h2>${L("¿Tienes fotos de tus productos?","У вас є фото товарів?")}</h2>${tilesIcon("fotos", PHOTOS, {cols:"g3"})}</div>
+  <div class="block"><h2>${L("Tus redes sociales","Ваші соцмережі")}<span class="opt-tag">${L("Opcional","Необов'язково")}</span></h2>
+    ${[["instagram","Instagram","@"],["tiktok","TikTok","@"],["facebook","Facebook",""],["whatsapp",L("WhatsApp de la tienda","WhatsApp магазину"),"+34"]].map(r=>`<div class="field"><label for="rs-${r[0]}">${r[1]}</label><input class="inp" id="rs-${r[0]}" data-red="${r[0]}" value="${esc(S.redes[r[0]])}" placeholder="${r[2]}"></div>`).join("")}</div>
+  <div class="block"><h2>${L("¿Algo más que debamos saber?","Щось іще, що нам варто знати?")}<span class="opt-tag">${L("Opcional","Необов'язково")}</span></h2>
+    <textarea class="inp" id="f-notas" data-bind="notas" aria-label="${L("Notas","Нотатки")}">${esc(S.notas)}</textarea></div>`;
+
+function missing(){
+  const m = [];
+  if(!S.sector.length) m.push([1, L("Qué vendes","Що ви продаєте")]);
+  if(!S.ambientes.length) m.push([3, L("Ambiente","Атмосфера")]);
+  if(S.colorModo === "paleta" && !S.paleta) m.push([4, L("Colores","Кольори")]);
+  if(!S.letra) m.push([5, L("Letra","Шрифт")]);
+  if(refsOkCount() < 2) m.push([6, L("Al menos 2 webs de referencia","Щонайменше 2 сайти-орієнтири")]);
+  return m;
+}
+function sliderText(s, v, lang){
+  const a = lang==="uk"?s.a[1]:s.a[0], b = lang==="uk"?s.b[1]:s.b[0];
+  if(v <= 35) return a; if(v >= 65) return b; return (lang==="uk"?"між ":"entre ") + a.toLowerCase() + (lang==="uk"?" і ":" y ") + b.toLowerCase();
+}
+R.resumen = () => {
+  const miss = missing();
+  const pal = currentPalette();
+  const palName = S.colorModo==="propios" ? L("Colores propios","Власні кольори") : S.colorModo===HELP ? helpLabel() : (byId(PALETTES,S.paleta) ? T(byId(PALETTES,S.paleta)) : "");
+  const f = byId(FONTS, S.letra);
+  const name = S.tienda.trim() || L("tu marca","вашого бренду");
+  const refs = S.refs.filter(r=>String(r.url).trim()).map(r=>`<li style="margin-bottom:8px"><b style="overflow-wrap:anywhere">${esc(normUrl(r.url))}</b>${r.gusta.trim()?`<br><span class="dim">${esc(r.gusta.trim())}</span>`:""}</li>`).join("");
+  const moods = S.ambientes.filter(x=>x!==HELP).map(id=>byId(MOODS,id));
+  return `<h1>${L("El ADN de ","ДНК ")}${esc(name)}</h1>
+  <p class="lead">${L("Esto es lo que has elegido. Descarga el resumen y envíanoslo por correo como archivo adjunto.","Ось що ви обрали. Завантажте підсумок і надішліть нам електронною поштою як вкладення.")}</p>
+  ${miss.length ? `<div class="miss"><p>${L("Falta por responder","Ще не заповнено")}</p><div class="chips">${miss.map(m=>`<button class="chip small" data-act="go" data-to="${m[0]}">${esc(m[1])}<span class="mi" aria-hidden="true">arrow_forward</span></button>`).join("")}</div></div>` : ""}
+  <div class="board">
+    <div class="card c4"><h3>${L("Así podría verse tu tienda","Так може виглядати ваш магазин")}</h3>${miniSite(Object.assign(previewCfg(),{}))}<p class="pv-note">${L("Es una idea para orientarnos, no el diseño final.","Це лише орієнтир, а не фінальний дизайн.")}</p></div>
+    <div class="card c2"><h3>${L("Colores","Кольори")}</h3><div class="sum-pal">${pal.map(c=>`<i style="background:${c}"></i>`).join("")}</div>
+      <div class="hexes">${pal.map(c=>`<span>${c.toUpperCase()}</span>`).join("")}</div><div>${esc(palName)}</div>
+      <h3 style="margin-top:10px">${L("Letra","Шрифт")}</h3>
+      ${f ? `<div style="font-family:${f.d};font-weight:${f.dw};text-transform:${f.tt};letter-spacing:${f.ls};font-size:28px;line-height:1.1;overflow-wrap:anywhere">${esc(S.tienda.trim()||"Aa")}</div><div class="dim" style="font-size:13px">${esc(T(f))} (${esc(f.dn)})</div>` : `<div>${S.letra===HELP?helpLabel():"..."}</div>`}
+    </div>
+    <div class="card c3"><h3>${L("Personalidad","Характер")}</h3>
+      ${SLIDERS.map(s=>`<div class="axis"><span>${esc(L(s.a[0],s.a[1]))}</span><div class="line"><span class="dot" style="left:${S.sl[s.id]}%"></span></div><span>${esc(L(s.b[0],s.b[1]))}</span></div>`).join("")}
+      ${S.palabras.length ? `<div class="words">${S.palabras.map(w=>{const x=WORDS.find(y=>y[0]===w);return `<span>${esc(L(x[0],x[1]))}</span>`}).join("")}</div>` : ""}
+      ${S.diferencia.trim() ? `<p class="quote">«${esc(S.diferencia.trim())}»</p>` : ""}
+    </div>
+    <div class="card c3"><h3>${L("Ambiente","Атмосфера")}</h3>
+      ${moods.length ? `<div class="grid g2">${moods.map(m=>`<div>${moodArt(m)}<div style="margin-top:6px;font-weight:600;font-size:14px">${esc(T(m))}</div></div>`).join("")}</div>` : `<div>${S.ambientes.includes(HELP)?helpLabel():"..."}</div>`}
+    </div>
+    <div class="card c3"><h3>${L("Webs que le gustan","Сайти, які подобаються")}</h3>
+      ${refs ? `<ul style="margin:0;padding-left:18px">${refs}</ul>` : "<div>...</div>"}
+    </div>
+    <div class="card c3"><h3>${L("Estructura","Структура")}</h3>
+      <div>${L("Portada","Головна")}: ${S.hero ? esc(S.hero===HELP?helpLabel():T(byId(HEROES,S.hero))) : "..."}</div>
+      <div>${L("Al entrar","На вході")}: ${S.entrada ? esc(T(byId(ENTRIES,S.entrada))) : "..."}</div>
+      <div>${L("Productos por fila","Товарів у ряду")}: ${S.rejilla || "..."}</div>
+      ${S.categorias.length ? `<div class="words">${S.categorias.map(c=>`<span>${esc(c)}</span>`).join("")}</div>` : ""}
+    </div>
+  </div>
+  <div class="send">
+    <button class="btn pri" data-act="download"><span class="mi" aria-hidden="true">download</span>${L("Descargar resumen","Завантажити підсумок")}</button>
+    <button class="btn" data-act="copy"><span class="mi" aria-hidden="true">content_copy</span>${L("Copiar el texto","Скопіювати текст")}</button>
+  </div>
+  <div class="status" id="status" aria-live="polite"></div>
+  <textarea class="inp copybox" id="copybox" readonly hidden aria-label="${L("Respuestas","Відповіді")}"></textarea>`;
+};
+
+/* ---------- resumen en Markdown para IApyme (siempre en castellano) ---------- */
+function summaryText(){
+  const es = o => o ? o.es : "";
+  const v = x => (x && String(x).trim()) ? String(x).trim() : "_sin respuesta_";
+  const list = (arr, src) => arr.map(id => id===HELP ? "que lo elija IApyme" : es(byId(src,id)) || id).join(", ");
+  const pal = currentPalette();
+  const palRoles = ["fondo","superficie / fotos","texto","acento","acento 2"];
+  const f = byId(FONTS,S.letra);
+  const fecha = new Date().toLocaleDateString("es-ES",{day:"numeric",month:"long",year:"numeric"});
+  const miss = [];
+  if(!S.sector.length) miss.push("Qué vende");
+  if(!S.ambientes.length) miss.push("Ambiente");
+  if(S.colorModo === "paleta" && !S.paleta) miss.push("Colores");
+  if(!S.letra) miss.push("Letra");
+  if(refsOkCount() < 2) miss.push("Al menos 2 webs de referencia");
+  const out = [];
+  out.push("# ADN de marca: " + (S.tienda.trim() || "tienda sin nombre"));
+  out.push("");
+  out.push("Cuestionario rellenado el " + fecha + " por " + (S.nombre.trim() || "la clienta") + ". Idioma usado en el cuestionario: " + (S.lang==="uk" ? "ucraniano" : "castellano") + ".");
+  out.push("");
+  out.push("## Negocio");
+  out.push("- **Nombre de la tienda:** " + v(S.tienda));
+  out.push("- **Qué vende:** " + v(list(S.sector, SECTORS) + (S.sectorOtro.trim() ? " (" + S.sectorOtro.trim() + ")" : "")));
+  out.push("- **Para quién:** " + v(list(S.publico, AUDIENCE)));
+  out.push("- **Precios:** " + v(es(byId(PRICES,S.precio))));
+  out.push("");
+  out.push("## Personalidad");
+  out.push("| Eje | 0 a 100 | Lectura |");
+  out.push("|---|---|---|");
+  SLIDERS.forEach(sl => out.push("| " + sl.a[0] + " / " + sl.b[0] + " | " + S.sl[sl.id] + " | " + sliderText(sl, S.sl[sl.id], "es") + " |"));
+  out.push("");
+  out.push("- **3 palabras:** " + v(S.palabras.join(", ")));
+  out.push("- **Qué la hace diferente (en sus palabras):** " + v(S.diferencia.replace(/\s*\n\s*/g," ")));
+  out.push("");
+  out.push("## Webs de referencia");
+  const refs = S.refs.filter(r => String(r.url).trim() || String(r.gusta).trim());
+  if(!refs.length) out.push("_sin respuesta_");
+  refs.forEach((r,i) => {
+    out.push("### " + (i+1) + ". " + v(r.url));
+    out.push("- **Qué le gusta:** " + v(String(r.gusta).replace(/\s*\n\s*/g," ")));
+    if((r.likes||[]).length) out.push("- **Marcó:** " + r.likes.map(l => es(byId(LIKES,l)).toLowerCase()).join(", "));
+    out.push("");
+  });
+  out.push("## Ambiente");
+  out.push(v(list(S.ambientes, MOODS)));
+  out.push("");
+  out.push("## Colores");
+  out.push("- **Elección:** " + (S.colorModo==="propios" ? "colores propios" : S.colorModo===HELP ? "que los elija IApyme" : v(es(byId(PALETTES,S.paleta)))));
+  if(S.colorModo !== HELP) pal.forEach((c,i) => out.push("- `" + c.toUpperCase() + "` " + palRoles[i]));
+  out.push("");
+  out.push("## Tipografía");
+  out.push(S.letra===HELP ? "Que la elija IApyme" : f ? f.es + " (" + f.dn + ")" : "_sin respuesta_");
+  out.push("");
+  out.push("## Página de inicio");
+  out.push("- **Lo primero que se ve:** " + (S.hero===HELP ? "que lo elija IApyme" : v(es(byId(HEROES,S.hero)))));
+  out.push("- **Al entrar:** " + v(es(byId(ENTRIES,S.entrada))));
+  out.push("- **Productos por fila:** " + (S.rejilla===HELP ? "que lo elija IApyme" : v(S.rejilla)));
+  out.push("- **Secciones:** " + v(list(S.secciones, SECTIONS)));
+  out.push("- **Categorías del menú:** " + v(S.categorias.join(", ")));
+  out.push("");
+  out.push("## Página de producto");
+  out.push("- **Diseño:** " + v(es(byId(PDPS,S.ficha))));
+  out.push("- **Información:** " + v(list(S.fichaInfo, PDP_INFO)));
+  out.push("");
+  out.push("## Lo básico");
+  out.push("- **Idiomas de la tienda:** " + v(list(S.idiomas, LANGS)));
+  out.push("- **Logotipo:** " + v(es(byId(LOGOS,S.logo))));
+  out.push("- **Fotos de producto:** " + v(es(byId(PHOTOS,S.fotos))));
+  ["instagram","tiktok","facebook","whatsapp"].forEach(k => out.push("- **" + k[0].toUpperCase() + k.slice(1) + ":** " + v(S.redes[k])));
+  out.push("- **Notas:** " + v(S.notas.replace(/\s*\n\s*/g," ")));
+  out.push("");
+  out.push("## Pendiente");
+  out.push(miss.length ? miss.map(x => "- " + x).join("\n") : "Nada. Están todos los mínimos.");
+  out.push("");
+  out.push("## Datos en bruto");
+  const raw = JSON.parse(JSON.stringify(S)); delete raw.step; delete raw.visto; delete raw.otrasWebs;
+  raw.paletaFinal = pal;
+  out.push("```json");
+  out.push(JSON.stringify(raw, null, 2));
+  out.push("```");
+  return out.join("\n");
+}
+function slug(x){ return String(x||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40) || "clienta"; }
+
+/* ---------- render ---------- */
+function renderTop(){
+  const st = STEPS[S.step];
+  $("progBar").style.width = Math.round(S.step/(STEPS.length-1)*100) + "%";
+  $("progTxt").textContent = S.step === 0 ? T(st) : `${S.step} / ${STEPS.length-1}  ${T(st)}`;
+  $("lang-es").setAttribute("aria-pressed", S.lang==="es");
+  $("lang-uk").setAttribute("aria-pressed", S.lang==="uk");
+  document.documentElement.lang = S.lang === "uk" ? "uk" : "es";
+}
+function renderPreview(){
+  const pv = $("pv");
+  const show = S.step >= 2 && S.step < STEPS.length-1;
+  $("wrap").classList.toggle("full", !show);
+  pv.hidden = !show;
+  if(!show){ pv.innerHTML = ""; return; }
+  pv.innerHTML = `<p class="pv-h">${L("Así va quedando tu tienda","Так виглядатиме ваш магазин")}</p>${miniSite(previewCfg())}<p class="pv-note">${L("Es una idea para orientarnos, no el diseño final.","Це лише орієнтир, а не фінальний дизайн.")}</p>`;
+}
+function renderNav(){
+  const last = S.step === STEPS.length-1;
+  const nextLabel = S.step === STEPS.length-2 ? L("Ver resumen","До підсумку") : L("Siguiente","Далі");
+  const optional = ["portada","producto"].includes(STEPS[S.step].id);
+  $("nav").hidden = S.step === 0;
+  $("navIn").innerHTML = `
+    <button class="btn" data-act="go" data-to="${S.step-1}"><span class="mi" aria-hidden="true">arrow_back</span>${L("Atrás","Назад")}</button>
+    <span style="display:flex;gap:10px;align-items:center">
+      ${optional ? `<button class="ghost" data-act="go" data-to="${S.step+1}">${L("Saltar","Пропустити")}</button>` : ""}
+      ${last ? "" : `<button class="btn pri" id="btnNext" data-act="go" data-to="${S.step+1}" ${STEPS[S.step].id==="webs" && refsOkCount()<2 ? "disabled" : ""}>${nextLabel}<span class="mi" aria-hidden="true">arrow_forward</span></button>`}
+    </span>`;
+}
+function render(){
+  const id = STEPS[S.step].id;
+  const toggle = (S.step >= 2 && S.step < STEPS.length-1) ? `<button class="btn pv-toggle" data-act="pvtoggle"><span class="mi" aria-hidden="true">visibility</span>${L("Ver cómo queda","Подивитися, як виглядає")}</button>` : "";
+  $("q").innerHTML = toggle + R[id]();
+  renderTop(); renderPreview(); renderNav();
+}
+function go(n){
+  n = Math.max(0, Math.min(STEPS.length-1, n));
+  S.step = n; S.visto = Math.max(S.visto, n); save(); render();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- eventos ---------- */
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]"); if(!el) return;
+  const act = el.dataset.act, val = el.dataset.val;
+  if(act === "go"){ go(+el.dataset.to); return; }
+  if(act === "lang"){ S.lang = val; save(); render(); return; }
+  if(act === "pvtoggle"){ $("pv").classList.toggle("open"); return; }
+  if(act === "pick"){
+    const key = el.dataset.key;
+    if(el.dataset.multi){
+      let arr = S[key].slice();
+      if(val === HELP){ arr = arr.includes(HELP) ? [] : [HELP]; }
+      else {
+        arr = arr.filter(x => x !== HELP);
+        if(arr.includes(val)) arr = arr.filter(x => x !== val);
+        else { const max = +(el.dataset.max || 99); if(arr.length >= max) arr.shift(); arr.push(val); }
+      }
+      S[key] = arr;
+    } else {
+      S[key] = S[key] === val ? "" : val;
+    }
+    if(key === "paleta" && S.paleta) S.colorModo = "paleta";
+    save(); keepScroll(render); return;
+  }
+  if(act === "colormode"){ S.colorModo = val; save(); keepScroll(render); return; }
+  if(act === "ref"){
+    const r = byId(REFS, val); const idx = S.refs.findIndex(x => normUrl(x.url) === normUrl(r.url));
+    let focusI = -1;
+    if(idx >= 0){ S.refs.splice(idx,1); while(S.refs.length < 2) S.refs.push({url:"",gusta:"",likes:[]}); }
+    else {
+      let free = S.refs.findIndex(x => !String(x.url).trim() && !String(x.gusta).trim());
+      if(free < 0){ S.refs.push({url:"",gusta:"",likes:[]}); free = S.refs.length-1; }
+      S.refs[free].url = r.url; focusI = free;
+    }
+    save(); keepScroll(render);
+    if(focusI >= 0){ const ta = $("rg-"+focusI); if(ta){ ta.scrollIntoView({block:"center"}); ta.focus({preventScroll:true}); } }
+    return;
+  }
+  if(act === "like"){
+    const i = +el.dataset.i; const arr = S.refs[i].likes || [];
+    S.refs[i].likes = arr.includes(val) ? arr.filter(x=>x!==val) : arr.concat(val);
+    save(); keepScroll(render); return;
+  }
+  if(act === "addref"){ S.refs.push({url:"",gusta:"",likes:[]}); save(); keepScroll(render); const i=$("ru-"+(S.refs.length-1)); if(i) i.focus(); return; }
+  if(act === "delref"){ S.refs.splice(+el.dataset.i,1); while(S.refs.length < 2) S.refs.push({url:"",gusta:"",likes:[]}); save(); keepScroll(render); return; }
+  if(act === "download"){ downloadSummary(); return; }
+  if(act === "addcat"){
+    let v = val;
+    if(!v){ const inp = $("f-cat"); v = inp ? inp.value.trim() : ""; }
+    if(v && !S.categorias.includes(v) && S.categorias.length < 20) S.categorias.push(v.slice(0,40));
+    save(); keepScroll(render); const inp2 = $("f-cat"); if(!val && inp2) inp2.focus(); return;
+  }
+  if(act === "delcat"){ S.categorias = S.categorias.filter(c => c !== val); save(); keepScroll(render); return; }
+  if(act === "copy"){ copyAnswers(); return; }
+});
+function keepScroll(fn){ const y = window.scrollY; fn(); window.scrollTo(0, y); }
+document.addEventListener("keydown", e => {
+  if(e.key === "Enter" && e.target.id === "f-cat"){ e.preventDefault(); const v = e.target.value.trim(); if(v && !S.categorias.includes(v)) { S.categorias.push(v.slice(0,40)); save(); keepScroll(render); const i=$("f-cat"); if(i) i.focus(); } }
+});
+document.addEventListener("input", e => {
+  const t = e.target;
+  if(t.dataset.bind){ S[t.dataset.bind] = t.value; save(); if(t.dataset.bind === "tienda") renderPreview(); return; }
+  if(t.dataset.red){ S.redes[t.dataset.red] = t.value; save(); return; }
+  if(t.dataset.refurl !== undefined || t.dataset.refg !== undefined){
+    const i = +(t.dataset.refurl ?? t.dataset.refg);
+    if(t.dataset.refurl !== undefined) S.refs[i].url = t.value; else S.refs[i].gusta = t.value;
+    save(); updateRefState(i); return;
+  }
+  if(t.dataset.slider){
+    S.sl[t.dataset.slider] = +t.value; save();
+    const row = t.closest(".sl"); if(row){ row.children[0].classList.toggle("on", +t.value < 40); row.children[2].classList.toggle("on", +t.value > 60); }
+    return;
+  }
+  if(t.dataset.color){ S.propios[+t.dataset.color] = t.value; save(); renderPreview(); return; }
+});
+
+/* ---------- copiar y enviar ---------- */
+function copyAnswers(){
+  const txt = summaryText();
+  const st = $("status"), box = $("copybox");
+  const fallback = () => { box.hidden = false; box.value = txt; box.focus(); box.select();
+    st.textContent = L("Selecciona todo el texto de abajo, cópialo y pégalo en un correo para nosotros.","Виділіть увесь текст нижче, скопіюйте і вставте в лист для нас."); };
+  try{
+    navigator.clipboard.writeText(txt).then(()=>{ st.textContent = L("Copiado. Pégalo en un correo para nosotros.","Скопійовано. Вставте в лист для нас."); }, fallback);
+  }catch(err){ fallback(); }
+}
+function updateRefState(i){
+  const row = $("refrow-"+i); if(row) row.classList.toggle("ok", validRef(S.refs[i]));
+  const c = $("refCount"); if(c){ c.innerHTML = refCountHtml(); c.className = "refcount " + (refsOkCount()>=2 ? "ok" : "no"); }
+  const b = $("btnNext"); if(b) b.disabled = refsOkCount() < 2;
+  const tile = document.querySelectorAll(".tile.ref");
+  tile.forEach(t => { const r = byId(REFS, t.dataset.val); t.setAttribute("aria-pressed", S.refs.some(x=>normUrl(x.url)===normUrl(r.url))); });
+}
+function downloadSummary(){
+  const md = summaryText();
+  const name = "adn-marca-" + slug(S.tienda || S.nombre) + "-" + new Date().toISOString().slice(0,10) + ".md";
+  const st = $("status");
+  try{
+    const blob = new Blob(["﻿" + md], {type:"text/markdown;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+    st.innerHTML = L(`Descargado: <b>${esc(name)}</b>. Lo tienes en tu carpeta de Descargas. Adjúntalo en un correo y envíanoslo.`,
+                     `Завантажено: <b>${esc(name)}</b>. Файл у папці «Завантаження». Прикріпіть його до листа й надішліть нам.`);
+  }catch(err){
+    st.textContent = L("No se ha podido descargar. Usa «Copiar el texto» y pégalo en un correo.","Не вдалося завантажити. Натисніть «Скопіювати текст» і вставте його в лист.");
+  }
+}
+
+render();
+})();
+</script>
+</body>
+</html>
